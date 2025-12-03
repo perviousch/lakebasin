@@ -1,0 +1,690 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>LakeBasin AgriTech — Modern Agribusiness (Demo)</title>
+  <meta name="description" content="LakeBasin AgriTech — technology-driven production, aggregation, value-addition and trading in Northern Zambia. Demo site." />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* small custom tweaks */
+    .hero-bg {
+        background-image: linear-gradient(0deg, rgba(6,95,70,0.85), rgba(6,95,70,0.35)), url('images/hero.svg');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-attachment: fixed; /* keeps the background static on scroll */
+    }
+
+    .card-shadow {
+        box-shadow: 0 6px 18px rgba(15,23,42,0.08);
+    }
+
+    /* sunkissed yellow for highlighting key words - use sparingly */
+    .highlight {
+        color: #F4D03F;
+        font-weight: 600;
+    }
+
+    /* hover reveal text effect */
+    .hover-reveal {
+        position: relative;
+    }
+    .hover-reveal .hero-text {
+        display: block;
+        transition: opacity 0.3s ease;
+    }
+    .hover-reveal .expand-text {
+        max-height: 0;
+        overflow: hidden;
+        opacity: 0;
+        transition: max-height 0.4s ease, opacity 0.3s ease, margin-top 0.3s ease;
+        margin-top: 0;
+    }
+    .hover-reveal:hover .hero-text {
+        opacity: 0.7;
+    }
+    .hover-reveal:hover .expand-text {
+        max-height: 500px;
+        opacity: 1;
+        margin-top: 0.5rem;
+    }
+
+    /* custom list markers using point.svg */
+    ul.custom-points {
+        list-style: none;
+        padding-left: 0;
+    }
+    ul.custom-points li {
+        padding-left: 1.75rem;
+        position: relative;
+        margin-bottom: 0.5rem;
+    }
+    ul.custom-points li::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        top: 0.25rem;
+        width: 1.25rem;
+        height: 1.25rem;
+        background-image: url('images/point.svg');
+        background-size: contain;
+        background-repeat: no-repeat;
+        background-position: center;
+    }
+
+    /* products dropdown panel */
+    .products-panel {
+      min-width: 320px;
+      max-width: 520px;
+    }
+
+    /* place products panel directly below nav without overlapping header content */
+    nav .products-panel {
+      position: absolute;
+      right: 0;
+      top: calc(100% + 6px);
+      z-index: 60;
+    }
+
+    /* contact area */
+    .contact-section {
+      background-image: url('images/bottom.svg');
+      background-repeat: no-repeat;
+      background-position: bottom center;
+      background-size: cover;
+      background-attachment: fixed; /* static background */
+    }
+    .contact-section .overlay {
+      background-color: rgba(255,255,255,0.85); /* low-opacity overlay so background shows through */
+      backdrop-filter: blur(2px);
+    }
+
+    /* crop card that accepts a background image per card */
+    .crop-card {
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      position: relative;
+      overflow: hidden;
+      min-height: 140px;
+      color: #072f1f;
+    }
+    .crop-card .card-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(255,255,255,0.8); /* lighten image so text is readable */
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    /* CTA tagline cursive */
+    .cta-tagline {
+      font-style: italic;
+      font-family: "Georgia", serif;
+    }
+
+    /* small responsive tune */
+    @media (max-width: 768px) {
+      nav .products-panel { right: 0; left: 0; margin: 0 1rem; }
+    }
+  </style>
+</head>
+<body class="antialiased text-slate-800 bg-slate-50 scroll-smooth">
+
+  <!-- NAV -->
+  <header class="bg-white shadow-sm sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <!-- logo (full and icon) -->
+        <a href="#" class="flex items-center gap-3">
+          <img src="images/logo.svg" alt="LakeBasin AgriTech" class="hidden md:block h-10" />
+          <img src="images/logo-icon.svg" alt="LB" class="md:hidden h-10" />
+        </a>
+        <div class="hidden md:block">
+          <a href="#" class="text-lg font-semibold">LBA</a>
+          <div class="text-xs text-slate-500">Kasama • Mbala >>Integrating production & markets</div>
+        </div>
+      </div>
+
+      <nav class="hidden md:flex gap-6 items-center text-sm text-slate-700 relative">
+        <a href="#about" class="hover:text-green-800">About</a>
+        <a href="#pillars" class="hover:text-green-800">Our Model</a>
+
+        <!-- Products trigger -->
+        <button id="productsBtn" class="hover:text-green-800 focus:outline-none" aria-expanded="false" aria-controls="productsPanel">
+          Products
+          <svg class="inline-block w-4 h-4 ml-1 -mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+          </svg>
+        </button>
+
+        <a href="#impact" class="hover:text-green-800">Impact</a>
+
+        <!-- CSR button -->
+        <button id="csrBtn" class="px-3 py-2 bg-amber-500 text-white rounded-md text-sm font-medium hover:bg-amber-600">CSR</button>
+
+        <a href="#contact" class="px-4 py-2 bg-green-700 text-white rounded-md text-sm">Contact</a>
+
+        <!-- Products dropdown panel (hidden by default) -->
+        <div id="productsPanel" class="bg-white border rounded-lg products-panel shadow-lg p-4 hidden" role="region" aria-labelledby="productsBtn">
+          <h4 class="text-sm font-semibold mb-2">Major Produce</h4>
+          <div class="grid grid-cols-1 gap-3">
+            <!-- Item -->
+            <div class="p-3 rounded-md border bg-slate-50 flex justify-between items-start">
+                <div>
+                  <div class="font-semibold">Onions</div>
+                  <div class="text-xs text-slate-600">Grading & packaging for retail & export</div>
+                </div>
+                <div class="flex gap-2 items-center">
+                  <button class="px-3 py-1 bg-green-700 text-white text-xs rounded-md customer-btn">Become customer</button>
+                  <button class="px-3 py-1 border border-green-700 text-green-700 text-xs rounded-md supplier-btn">Become supplier</button>
+                </div>
+            </div>
+
+            <div class="p-3 rounded-md border bg-slate-50 flex justify-between items-start">
+                <div>
+                  <div class="font-semibold">Potatoes</div>
+                  <div class="text-xs text-slate-600">Washing, grading & packaging</div>
+                </div>
+                <div class="flex gap-2 items-center">
+                  <button class="px-3 py-1 bg-green-700 text-white text-xs rounded-md customer-btn">Become customer</button>
+                  <button class="px-3 py-1 border border-green-700 text-green-700 text-xs rounded-md supplier-btn">Become supplier</button>
+                </div>
+            </div>
+
+            <div class="p-3 rounded-md border bg-slate-50 flex justify-between items-start">
+                <div>
+                  <div class="font-semibold">Maize</div>
+                  <div class="text-xs text-slate-600">Milling & bulk supply</div>
+                </div>
+                <div class="flex gap-2 items-center">
+                  <button class="px-3 py-1 bg-green-700 text-white text-xs rounded-md customer-btn">Become customer</button>
+                  <button class="px-3 py-1 border border-green-700 text-green-700 text-xs rounded-md supplier-btn">Become supplier</button>
+                </div>
+            </div>
+
+            <div class="p-3 rounded-md border bg-slate-50 flex justify-between items-start">
+                <div>
+                  <div class="font-semibold">Beans</div>
+                  <div class="text-xs text-slate-600">Cleaning & sorting</div>
+                </div>
+                <div class="flex gap-2 items-center">
+                  <button class="px-3 py-1 bg-green-700 text-white text-xs rounded-md customer-btn">Become customer</button>
+                  <button class="px-3 py-1 border border-green-700 text-green-700 text-xs rounded-md supplier-btn">Become supplier</button>
+                </div>
+            </div>
+
+            <div class="p-3 rounded-md border bg-slate-50 flex justify-between items-start">
+                <div>
+                  <div class="font-semibold">Irrigated Vegetables</div>
+                  <div class="text-xs text-slate-600">Year-round fresh vegetables</div>
+                </div>
+                <div class="flex gap-2 items-center">
+                  <button class="px-3 py-1 bg-green-700 text-white text-xs rounded-md customer-btn">Become customer</button>
+                  <button class="px-3 py-1 border border-green-700 text-green-700 text-xs rounded-md supplier-btn">Become supplier</button>
+                </div>
+            </div>
+
+          </div>
+        </div>
+      </nav>
+
+      <button class="md:hidden p-2 rounded-md" id="navToggle" aria-label="menu">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-6 h-6 text-slate-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h16M4 16h16" />
+        </svg>
+      </button>
+    </div>
+
+    <!-- Mobile nav -->
+    <div id="mobileNav" class="hidden md:hidden bg-white border-t">
+      <div class="px-6 py-4 flex flex-col gap-3">
+        <a href="#about" class="py-2">About</a>
+        <a href="#pillars" class="py-2">Our Model</a>
+
+        <!-- mobile products toggle -->
+        <div>
+          <button id="mobileProductsBtn" class="w-full text-left py-2 flex items-center justify-between">
+            Products
+            <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+            </svg>
+          </button>
+
+          <div id="mobileProductsPanel" class="hidden mt-2 space-y-2">
+            <!-- mobile product items -->
+            <div class="p-3 rounded-md border bg-slate-50 flex justify-between items-center">
+              <div>
+                <div class="font-semibold">Onions</div>
+                <div class="text-xs text-slate-600">Grading & packaging</div>
+              </div>
+              <div class="flex gap-2">
+                <button class="px-3 py-1 bg-green-700 text-white text-xs rounded-md">Become customer</button>
+                <button class="px-3 py-1 border border-green-700 text-green-700 text-xs rounded-md">Become supplier</button>
+              </div>
+            </div>
+
+            <div class="p-3 rounded-md border bg-slate-50 flex justify-between items-center">
+              <div>
+                <div class="font-semibold">Potatoes</div>
+                <div class="text-xs text-slate-600">Washing & grading</div>
+              </div>
+              <div class="flex gap-2">
+                <button class="px-3 py-1 bg-green-700 text-white text-xs rounded-md">Become customer</button>
+                <button class="px-3 py-1 border border-green-700 text-green-700 text-xs rounded-md">Become supplier</button>
+              </div>
+            </div>
+
+            <div class="p-3 rounded-md border bg-slate-50 flex justify-between items-center">
+              <div>
+                <div class="font-semibold">Maize</div>
+                <div class="text-xs text-slate-600">Milling</div>
+              </div>
+              <div class="flex gap-2">
+                <button class="px-3 py-1 bg-green-700 text-white text-xs rounded-md">Become customer</button>
+                <button class="px-3 py-1 border border-green-700 text-green-700 text-xs rounded-md">Become supplier</button>
+              </div>
+            </div>
+
+            <div class="p-3 rounded-md border bg-slate-50 flex justify-between items-center">
+              <div>
+                <div class="font-semibold">Beans</div>
+                <div class="text-xs text-slate-600">Cleaning & sorting</div>
+              </div>
+              <div class="flex gap-2">
+                <button class="px-3 py-1 bg-green-700 text-white text-xs rounded-md">Become customer</button>
+                <button class="px-3 py-1 border border-green-700 text-green-700 text-xs rounded-md">Become supplier</button>
+              </div>
+            </div>
+
+            <div class="p-3 rounded-md border bg-slate-50 flex justify-between items-center">
+              <div>
+                <div class="font-semibold">Irrigated Vegetables</div>
+                <div class="text-xs text-slate-600">Fresh & year-round</div>
+              </div>
+              <div class="flex gap-2">
+                <button class="px-3 py-1 bg-green-700 text-white text-xs rounded-md">Become customer</button>
+                <button class="px-3 py-1 border border-green-700 text-green-700 text-xs rounded-md">Become supplier</button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <a href="#impact" class="py-2">Impact</a>
+
+        <div class="flex gap-2">
+          <a href="#csr" class="px-3 py-2 bg-amber-500 text-white rounded-md text-sm">CSR</a>
+          <a href="#contact" class="py-2 font-semibold">Contact</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <main class="mt-8">
+    <section class="hero-bg rounded-b-3xl">
+      <div class="max-w-7xl mx-auto px-6 py-20 md:py-28 text-white">
+        <div class="grid md:grid-cols-2 gap-10 items-center">
+          <div>
+            <h1 class="text-4xl md:text-5xl font-extrabold leading-tight">LakeBasin AgriTech</h1>
+            <p class="mt-4 text-lg max-w-xl opacity-90">
+              Transforming smallholder farming into a competitive, technology-enabled agri-business.
+              Production • Aggregation • Value-addition • Trading — based in Kasama & Mbala, Northern Province.
+            </p>
+
+            <div class="mt-6 flex gap-4">
+              <a href="#pillars" class="inline-flex items-center px-5 py-3 bg-white text-green-800 rounded-lg font-semibold shadow-sm">Our Model</a>
+              <a href="#contact" class="inline-flex items-center px-5 py-3 border border-white/30 rounded-lg">Get in touch</a>
+            </div>
+
+            <ul class="mt-8 grid grid-cols-2 gap-2 text-sm text-white/90 max-w-md custom-points">
+              <li>Focus crops: Onions, Potatoes, Maize, Beans, Vegetables</li>
+              <li>Impact: Farmer integration, jobs, stronger food systems</li>
+            </ul>
+          </div>
+
+          <!-- Value card -->
+          <div class="bg-white/10 p-6 rounded-2xl card-shadow">
+            <div class="flex items-center gap-4">
+              <div class="w-14 h-14 rounded-lg bg-white/20 flex items-center justify-center font-bold">4</div>
+              <div>
+                <div class="text-sm uppercase">Four Pillar Model</div>
+                <h3 class="text-xl font-semibold">Production • Aggregation • Value-addition • Trading</h3>
+              </div>
+            </div>
+
+            <p class="mt-4 text-sm text-white/85 hover-reveal">
+              <span class="hero-text">Combining commercial production and farmer aggregation to create reliable supply chains.</span>
+              <span class="expand-text">Our integrated approach connects smallholder farmers with formal markets through structured aggregation, quality processing, and transparent pricing. We leverage technology to reduce post-harvest losses and ensure consistent supply year-round.</span>
+            </p>
+
+            <dl class="mt-6 grid grid-cols-1 gap-3 text-white/90 text-sm">
+              <div class="flex justify-between"><span>Target 5 yrs:</span><span class="font-semibold">1,500+ farmers</span></div>
+              <div class="flex justify-between"><span>Scale:</span><span class="font-semibold">200 hectares</span></div>
+              <div class="flex justify-between"><span>Export focus:</span><span class="font-semibold">Regional + global</span></div>
+            </dl>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ABOUT -->
+    <section id="about" class="max-w-7xl mx-auto px-6 py-12">
+      <div class="grid md:grid-cols-3 gap-8 items-start">
+        <div class="md:col-span-2">
+          <h2 class="text-2xl font-bold">About LakeBasin AgriTech</h2>
+          <p class="mt-4 text-slate-700 leading-relaxed hover-reveal">
+            <span class="hero-text">LakeBasin AgriTech is an emerging production, aggregation, and value-addition enterprise in Kasama and Mbala.</span>
+            <span class="expand-text">We integrate technology-driven farming with structured markets to strengthen food systems. Our model connects smallholder farmers to formal markets through quality processing, transparent pricing, and reliable supply chains across Northern Zambia.</span>
+          </p>
+
+          <div class="mt-6 grid md:grid-cols-2 gap-4">
+            <div class="p-5 bg-white rounded-lg card-shadow hover-reveal">
+              <h4 class="font-semibold"><span class="highlight">Vision</span></h4>
+              <p class="mt-2 text-sm text-slate-600">
+                <span class="hero-text">Northern Zambia's leading integrated agri-business.</span>
+                <span class="expand-text">Driving modern agriculture through technology, sustainable practices, and market integration to transform rural livelihoods and strengthen regional food security.</span>
+              </p>
+            </div>
+            <div class="p-5 bg-white rounded-lg card-shadow hover-reveal">
+              <h4 class="font-semibold"><span class="highlight">Mission</span></h4>
+              <p class="mt-2 text-sm text-slate-600">
+                <span class="hero-text">Deliver high-quality products through technology-enabled production.</span>
+                <span class="expand-text">We partner with communities to create sustainable value chains, improve farmer incomes, and supply consistent, high-quality agricultural products to local and export markets.</span>
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <aside class="bg-white p-5 rounded-lg card-shadow">
+          <h4 class="font-semibold">Core Values</h4>
+          <ul class="mt-3 text-sm text-slate-600 custom-points">
+            <li>Integrity</li>
+            <li>Innovation</li>
+            <li>Impact</li>
+            <li>Sustainability</li>
+            <li>Collaboration</li>
+          </ul>
+        </aside>
+      </div>
+    </section>
+
+    <!-- BANNER -->
+    <section class="w-full overflow-hidden">
+      <img src="images/banner.svg" alt="" class="w-full h-auto object-contain" style="display: block;" />
+    </section>
+
+    <!-- PILLARS -->
+    <section id="pillars" class="bg-slate-100 py-12">
+      <div class="max-w-7xl mx-auto px-6">
+        <h2 class="text-2xl font-bold">Our 4 Pillars</h2>
+        <p class="mt-2 text-slate-600 max-w-2xl">Our integrated model reduces supply gaps, improves farmer incomes, and supplies formal markets with consistent, high-quality produce.</p>
+
+        <div class="mt-6 grid md:grid-cols-4 gap-6">
+          <div class="bg-white p-5 rounded-lg card-shadow hover-reveal">
+            <h5 class="font-semibold">Commercial Production</h5>
+            <p class="mt-2 text-sm text-slate-600">
+              <span class="hero-text">Solar irrigation & mechanisation.</span>
+              <span class="expand-text">Digital monitoring systems ensure year-round supply with consistent quality. Our center pivot systems and precision agriculture techniques maximize yield while conserving resources.</span>
+            </p>
+          </div>
+          <div class="bg-white p-5 rounded-lg card-shadow hover-reveal">
+            <h5 class="font-semibold">Aggregation & Partnerships</h5>
+            <p class="mt-2 text-sm text-slate-600">
+              <span class="hero-text">Structured markets & out-grower schemes.</span>
+              <span class="expand-text">We work directly with hundreds of smallholder farmers, providing fair pricing, quality standards, and extension support to build sustainable partnerships.</span>
+            </p>
+          </div>
+          <div class="bg-white p-5 rounded-lg card-shadow hover-reveal">
+            <h5 class="font-semibold">Value Addition</h5>
+            <p class="mt-2 text-sm text-slate-600">
+              <span class="hero-text">Grading, cleaning & processing.</span>
+              <span class="expand-text">Our packhouse operations include washing, grading, drying, milling, and dehydrated vegetable processing to extend shelf-life and increase market value.</span>
+            </p>
+          </div>
+          <div class="bg-white p-5 rounded-lg card-shadow hover-reveal">
+            <h5 class="font-semibold">Trading & Distribution</h5>
+            <p class="mt-2 text-sm text-slate-600">
+              <span class="hero-text">Supplying supermarkets & export markets.</span>
+              <span class="expand-text">We connect quality produce to retail chains, wholesale buyers, institutions, and regional export markets through reliable logistics and cold chain management.</span>
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PRODUCTS (cards now accept background images) -->
+    <section id="products" class="max-w-7xl mx-auto px-6 py-12">
+      <h2 class="text-2xl font-bold">Key Products & Services</h2>
+      <p class="mt-2 text-slate-600">High-demand crops & processing services that increase shelf-life & market value.</p>
+
+      <div class="mt-6 grid md:grid-cols-3 gap-6">
+        <!-- each card uses .crop-card and an inner overlay so you can set a background image -->
+        <div class="rounded-lg crop-card card-shadow" style="background-image: url('images/onions-card.jpg')">
+          <div class="card-overlay">
+            <div>
+              <h4 class="font-semibold">Onion Grading & Packaging</h4>
+            </div>
+            <div class="flex gap-2">
+              <button class="px-3 py-2 bg-green-700 text-white rounded-md text-sm">Become customer</button>
+              <button class="px-3 py-2 border border-green-700 text-green-700 rounded-md text-sm">Become supplier</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="rounded-lg crop-card card-shadow" style="background-image: url('images/potatoes-card.jpg')">
+          <div class="card-overlay">
+            <div>
+              <h4 class="font-semibold">Potato Washing, Grading & Packaging</h4>
+            </div>
+            <div class="flex gap-2">
+              <button class="px-3 py-2 bg-green-700 text-white rounded-md text-sm">Become customer</button>
+              <button class="px-3 py-2 border border-green-700 text-green-700 rounded-md text-sm">Become supplier</button>
+            </div>
+          </div>
+        </div>
+
+        <div class="rounded-lg crop-card card-shadow" style="background-image: url('images/maize-card.jpg')">
+          <div class="card-overlay">
+            <div>
+              <h4 class="font-semibold">Maize Milling & Bean Cleaning</h4>
+            </div>
+            <div class="flex gap-2">
+              <button class="px-3 py-2 bg-green-700 text-white rounded-md text-sm">Become customer</button>
+              <button class="px-3 py-2 border border-green-700 text-green-700 rounded-md text-sm">Become supplier</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- CTA tagline and larger become buttons -->
+      <div class="mt-8 p-6 rounded-lg bg-white card-shadow flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+        <div>
+          <div class="text-lg font-semibold">Join our market network</div>
+          <div class="text-sm text-slate-600 cta-tagline">become part of our journey</div>
+        </div>
+        <div class="flex gap-3">
+          <button class="px-4 py-2 bg-green-700 text-white rounded-md">Become customer</button>
+          <button class="px-4 py-2 border border-green-700 text-green-700 rounded-md">Become supplier</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- IMPACT -->
+    <section id="impact" class="bg-white py-12">
+      <div class="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-8 items-start">
+        <div>
+          <h2 class="text-2xl font-bold">Social & Economic Impact</h2>
+          <p class="mt-4 text-slate-600 hover-reveal">
+            <span class="hero-text">Integrating farmers into structured markets, creating jobs & strengthening food systems.</span>
+            <span class="expand-text">We reduce post-harvest losses through aggregation and processing, connect smallholder farmers to formal markets with fair pricing, and create employment opportunities for youth and women in rural communities.</span>
+          </p>
+
+          <ul class="mt-6 grid grid-cols-2 gap-4 text-sm text-slate-700 custom-points">
+            <li class="p-4 rounded-lg bg-slate-50 card-shadow">Jobs Created<div class="mt-2 text-sm text-slate-500">Full-time & seasonal roles</div></li>
+            <li class="p-4 rounded-lg bg-slate-50 card-shadow">Farmer Partnerships<div class="mt-2 text-sm text-slate-500">Out-grower schemes & extension</div></li>
+            <li class="p-4 rounded-lg bg-slate-50 card-shadow">Reduced Losses<div class="mt-2 text-sm text-slate-500">Aggregation & processing reduce waste</div></li>
+            <li class="p-4 rounded-lg bg-slate-50 card-shadow">Exports<div class="mt-2 text-sm text-slate-500">Regional gateway via Mbala</div></li>
+          </ul>
+        </div>
+
+        <div class="bg-slate-50 p-6 rounded-lg card-shadow">
+          <h4 class="font-semibold">Our Goals</h4>
+          <ul class="mt-3 text-sm text-slate-700 custom-points">
+            <li>Connect more farmers to reliable markets</li>
+            <li>Expand production capacity</li>
+            <li>Strengthen supply chain infrastructure</li>
+            <li>Enhance farmer support services</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- CSR SECTION -->
+    <section id="csr" class="max-w-7xl mx-auto px-6 py-12">
+      <h2 class="text-2xl font-bold">Corporate Social Responsibility</h2>
+      <p class="mt-2 text-slate-600 max-w-2xl hover-reveal">
+        <span class="hero-text">Investing in farmer training, youth employment & community resilience.</span>
+        <span class="expand-text">Our CSR programs focus on climate-smart agriculture practices, skills development, and creating sustainable livelihoods that benefit entire communities across Northern Zambia.</span>
+      </p>
+
+      <div class="mt-6 grid md:grid-cols-2 gap-6">
+        <div class="bg-white p-6 rounded-lg card-shadow hover-reveal">
+          <h4 class="font-semibold">Farmer Training & Extension</h4>
+          <p class="mt-2 text-sm text-slate-700">
+            <span class="hero-text">Hands-on training & digital extension.</span>
+            <span class="expand-text">We provide practical workshops, field demonstrations, and mobile-based advisory services to help farmers improve yields, reduce losses, and increase their incomes through better agricultural practices.</span>
+          </p>
+        </div>
+
+        <div class="bg-white p-6 rounded-lg card-shadow hover-reveal">
+          <h4 class="font-semibold">Youth & Women Empowerment</h4>
+          <p class="mt-2 text-sm text-slate-700">
+            <span class="hero-text">Market-linked opportunities for youth & women.</span>
+            <span class="expand-text">We create employment and entrepreneurship opportunities in agribusiness, providing training, mentorship, and access to markets that enable youth and women to build sustainable livelihoods.</span>
+          </p>
+        </div>
+      </div>
+
+      <div class="mt-6">
+        <button class="px-4 py-2 bg-green-700 text-white rounded-md">See more</button>
+      </div>
+    </section>
+
+    <!-- CONTACT (background bottom.svg, fixed) -->
+    <section id="contact" class="contact-section py-12">
+      <div class="max-w-7xl mx-auto px-6">
+        <div class="grid md:grid-cols-2 gap-8">
+          <div class="overlay p-6 rounded-lg">
+            <h3 class="text-lg font-semibold">Get in touch</h3>
+            <p class="mt-2 text-sm text-slate-700">Headquarters: Kasama • Branch: Mbala</p>
+
+            <div class="mt-4 space-y-3 text-sm text-slate-700">
+              <div><strong>Email:</strong> info@lakebasin-agritech.com</div>
+              <div><strong>Phone:</strong> +260 974 633 990</div>
+              <div><strong>Registration:</strong> PACRA click link</div>
+            </div>
+
+            <div class="mt-6 text-sm text-slate-700">Follow us: <span class="text-slate-800 font-semibold">LinkedIn / Facebook (placeholder)</span></div>
+          </div>
+
+          <form class="overlay p-6 rounded-lg" onsubmit="event.preventDefault(); alert('Demo form — implement backend to receive messages.');">
+            <h3 class="text-lg font-semibold">Send a message</h3>
+            <label class="block mt-4 text-sm">Name
+              <input required class="mt-1 w-full rounded-md border px-3 py-2 text-sm" placeholder="Your full name">
+            </label>
+            <label class="block mt-3 text-sm">Email
+              <input type="email" required class="mt-1 w-full rounded-md border px-3 py-2 text-sm" placeholder="you@example.com">
+            </label>
+            <label class="block mt-3 text-sm">Message
+              <textarea required class="mt-1 w-full rounded-md border px-3 py-2 text-sm" rows="4" placeholder="Tell us how you'd like to work with LakeBasin"></textarea>
+            </label>
+            <div class="mt-4">
+              <button class="px-4 py-2 bg-green-700 text-white rounded-md">Send message</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="bg-slate-900 text-white py-8 mt-12">
+      <div class="max-w-7xl mx-auto px-6 flex flex-col md:flex-row justify-between items-start gap-6">
+        <div>
+          <div class="font-semibold">LakeBasin AgriTech Ltd</div>
+          <div class="text-sm text-slate-300 mt-2">Kasama • Mbala • Northern Province, Zambia</div>
+        </div>
+        <div class="text-sm text-slate-400">
+          <div>© <span id="year"></span> LakeBasin AgriTech Ltd — Demo</div>
+        </div>
+      </div>
+    </footer>
+  </main>
+
+  <script>
+    // small interactivity
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    // mobile nav toggle
+    const navToggle = document.getElementById('navToggle');
+    const mobileNav = document.getElementById('mobileNav');
+    navToggle?.addEventListener('click', () => {
+      mobileNav.classList.toggle('hidden');
+    });
+
+    // Products dropdown (desktop)
+    const productsBtn = document.getElementById('productsBtn');
+    const productsPanel = document.getElementById('productsPanel');
+
+    productsBtn?.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const isHidden = productsPanel.classList.contains('hidden');
+      // hide any others (if any)
+      if (isHidden) {
+        productsPanel.classList.remove('hidden');
+        productsBtn.setAttribute('aria-expanded', 'true');
+        // ensure panel is visible within viewport if near edge
+        productsPanel.scrollIntoView({ block: 'nearest', inline: 'nearest', behavior: 'smooth' });
+      } else {
+        productsPanel.classList.add('hidden');
+        productsBtn.setAttribute('aria-expanded', 'false');
+      }
+    });
+
+    // Close products panel when clicking outside
+    document.addEventListener('click', (e) => {
+      if (productsPanel && !productsPanel.contains(e.target) && !productsBtn.contains(e.target)) {
+        productsPanel.classList.add('hidden');
+        productsBtn?.setAttribute('aria-expanded', 'false');
+      }
+    });
+
+    // CSR button scrolls to CSR section
+    document.getElementById('csrBtn')?.addEventListener('click', () => {
+      const csr = document.getElementById('csr');
+      if (csr) csr.scrollIntoView({ behavior: 'smooth' });
+    });
+
+    // Customer / Supplier buttons demo actions
+    document.querySelectorAll('.customer-btn, .supplier-btn').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const txt = btn.textContent || '';
+        alert(txt.trim() + ' clicked — implement routing or forms as needed.');
+      });
+    });
+
+    // Mobile products toggle
+    const mobileProductsBtn = document.getElementById('mobileProductsBtn');
+    const mobileProductsPanel = document.getElementById('mobileProductsPanel');
+    mobileProductsBtn?.addEventListener('click', () => {
+      mobileProductsPanel.classList.toggle('hidden');
+    });
+  </script>
+
+</body>
+</html>
