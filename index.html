@@ -73,6 +73,43 @@
         background-position: center;
     }
 
+    /* commodity price ticker */
+    .price-ticker {
+        background-color: #022c22; /* deep green to echo brand */
+        color: #fefce8;           /* warm light text */
+        white-space: nowrap;
+        overflow: hidden;
+        border-bottom: 1px solid rgba(15,23,42,0.08);
+    }
+    .price-ticker-inner {
+        display: inline-block;
+        padding: 0.5rem 0;
+        animation: ticker-scroll 25s linear infinite;
+    }
+    .price-item {
+        margin-right: 2.5rem;
+        font-size: 0.875rem;
+    }
+    .price-label {
+        font-weight: 600;
+    }
+    .price-tag {
+        color: #F4D03F; /* sunkissed yellow accent for price */
+        font-weight: 600;
+    }
+    .price-action {
+        color: #6ee7b7; /* soft green for action words */
+        font-weight: 500;
+    }
+    @keyframes ticker-scroll {
+        0% {
+            transform: translateX(100%);
+        }
+        100% {
+            transform: translateX(-100%);
+        }
+    }
+
     /* products dropdown panel */
     .products-panel {
       min-width: 320px;
@@ -323,6 +360,50 @@
       </div>
     </div>
   </header>
+
+  <!-- COMMODITY PRICE TICKER -->
+  <section class="price-ticker">
+    <div class="max-w-7xl mx-auto px-6">
+      <div class="price-ticker-inner">
+        <span class="price-item">
+          <span class="price-label">Rice</span>
+          <span class="price-tag">K120/kg</span>
+          <span class="price-action">(buy)</span>
+        </span>
+        <span class="price-item">
+          <span class="price-label">Rice</span>
+          <span class="price-tag">K140/tonne</span>
+          <span class="price-action">(sell)</span>
+        </span>
+        <span class="price-item">
+          <span class="price-label">Onions</span>
+          <span class="price-tag">K95/bag</span>
+          <span class="price-action">(buy)</span>
+        </span>
+        <span class="price-item">
+          <span class="price-label">Potatoes</span>
+          <span class="price-tag">K160/bag</span>
+          <span class="price-action">(buy)</span>
+        </span>
+        <span class="price-item">
+          <span class="price-label">Maize</span>
+          <span class="price-tag">K4.50/kg</span>
+          <span class="price-action">(buy)</span>
+        </span>
+        <!-- repeat a few items so the ticker feels continuous -->
+        <span class="price-item">
+          <span class="price-label">Rice</span>
+          <span class="price-tag">K120/kg</span>
+          <span class="price-action">(buy)</span>
+        </span>
+        <span class="price-item">
+          <span class="price-label">Rice</span>
+          <span class="price-tag">K140/tonne</span>
+          <span class="price-action">(sell)</span>
+        </span>
+      </div>
+    </div>
+  </section>
 
   <!-- HERO -->
   <main class="mt-8">
